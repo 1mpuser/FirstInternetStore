@@ -29,11 +29,11 @@ class UserController {
 		const { email, password } = req.body;
 		const user = await User.findOne({ where: { email } });
 		if (!user) {
-			return next(ApiError.internal('User with this email not found!'));
+			return next(ApiError.badRequest('User with this email not found!'));
 		}
 		const comparePassword = bcrypt.compareSync(password, user.password);
 		if (!comparePassword)
-			return next(ApiError.internal('Incoorrect password entered'));
+			return next(ApiError.badRequest('Incoorrect password entered'));
 		const token = generateJWT(user.id, user.email, user.role);
 		return res.json({ token });
 	}
