@@ -2,6 +2,7 @@ const uuid = require('uuid');
 const path = require('path');
 const { Device, DeviceInfo } = require('../models/models');
 const ApiError = require('../error/ApiError');
+const itemSearchAndCountInDifferentTables = require('../scripts/itemSearchInDifferentTables');
 
 class DeviceController {
 	async create(req, res, next) {
@@ -36,10 +37,21 @@ class DeviceController {
 	}
 
 	async getAll(req, res) {
-		let { brandId, typeId, limit, page } = req.query;
+		const query = req.query;
+		let { brandId, typeId, limit, page } = query;
 		page = page || 1;
 		limit = limit || 9;
 		let offset = page * limit - limit;
+		// const arr = [];
+		// if (brandId) arr.push(brandId);
+		// if (typeId) arr.push(typeId);
+		// const devices = itemSearchAndCountInDifferentTables(
+		// 	Device,
+		// 	arr,
+		// 	limit,
+		// 	offset
+		// );
+		//tried to refactor but smth doesnt work
 		let devices;
 		if (!brandId && !typeId) {
 			devices = await Device.findAndCountAll({ limit, offset }); //if nothing we'll return all
